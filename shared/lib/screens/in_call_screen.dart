@@ -224,25 +224,22 @@ class _RemoteVideoTile extends StatelessWidget {
       );
     }
 
-    // Try to get the video track for real HMS video.
+    // Show avatar if peer has no video track or camera is off.
     final videoTrack = remotePeer?.videoTrack;
-    if (videoTrack == null || !videoTrack.isMute) {
-      // Show avatar if peer has camera off.
-      if (videoTrack?.isMute ?? false) {
-        return Container(
-          color: const Color(0xFF0D1117),
-          child: Center(
-            child: Text(
-              remotePeer?.name.substring(0, 1).toUpperCase() ?? '?',
-              style: const TextStyle(
-                color: Colors.white54,
-                fontSize: 72,
-                fontWeight: FontWeight.w700,
-              ),
+    if (videoTrack == null || videoTrack.isMute) {
+      return Container(
+        color: const Color(0xFF0D1117),
+        child: Center(
+          child: Text(
+            remotePeer?.name.substring(0, 1).toUpperCase() ?? '?',
+            style: const TextStyle(
+              color: Colors.white54,
+              fontSize: 72,
+              fontWeight: FontWeight.w700,
             ),
           ),
-        );
-      }
+        ),
+      );
     }
 
     return HMSVideoView(
