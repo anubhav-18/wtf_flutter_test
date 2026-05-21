@@ -43,7 +43,10 @@ class _PostCallRatingSheetState extends ConsumerState<PostCallRatingSheet> {
     }
     DevLogService.add('[LOG]', 'Post-call: rating=$_rating saved');
     if (!mounted) return;
-    Navigator.of(context).pop();
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      AppRoutes.guruDashboard,
+      (route) => false,
+    );
   }
 
   @override
@@ -149,7 +152,10 @@ class _PostCallRatingSheetState extends ConsumerState<PostCallRatingSheet> {
                         child: OutlinedButton(
                           onPressed: () {
                             DevLogService.add('[LOG]', 'Post-call rating skipped');
-                            Navigator.of(context).pop();
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                              AppRoutes.guruDashboard,
+                              (route) => false,
+                            );
                           },
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 14),

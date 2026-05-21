@@ -78,6 +78,11 @@ class _InCallScreenState extends ConsumerState<InCallScreen> {
     final hms = ref.read(hmsServiceProvider);
     await hms.leave();
 
+    // Mark the call request as completed so it leaves "upcoming".
+    if (_args != null) {
+      await ref.read(callServiceProvider).markCompleted(_args!.callRequestId);
+    }
+
     final endedAt = DateTime.now();
     final log = await ref.read(logServiceProvider).createFromCall(
           startedAt: _joinedAt ?? endedAt,

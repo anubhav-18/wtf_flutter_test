@@ -38,7 +38,10 @@ class _PostCallNotesSheetState extends ConsumerState<PostCallNotesSheet> {
     }
     DevLogService.add('[LOG]', 'Trainer post-call notes saved');
     if (!mounted) return;
-    Navigator.of(context).pop();
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      AppRoutes.trainerDashboard,
+      (route) => false,
+    );
   }
 
   @override
@@ -112,7 +115,10 @@ class _PostCallNotesSheetState extends ConsumerState<PostCallNotesSheet> {
                         child: OutlinedButton(
                           onPressed: () {
                             DevLogService.add('[LOG]', 'Trainer notes skipped');
-                            Navigator.of(context).pop();
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                              AppRoutes.trainerDashboard,
+                              (route) => false,
+                            );
                           },
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 14),

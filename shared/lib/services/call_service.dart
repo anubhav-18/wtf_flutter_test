@@ -19,4 +19,8 @@ class CallService {
   Future<void> decline(String requestId, String reason) {
     return repository.decline(requestId, reason);
   }
+
+  Future<void> markCompleted(String requestId) {
+    return repository.markCompleted(requestId);
+  }
 }
