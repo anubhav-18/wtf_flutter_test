@@ -4,6 +4,11 @@ Local-first Flutter assessment: real-time-feel chat, smart call scheduling, and 
 
 ---
 
+## 🎥 3-Minute Demo Video
+A complete end-to-end video demonstration of the Guru ↔ Trainer Chat & Video Calling pipeline is available in the repository at [WTF_Video_Demo.mp4](./WTF_Video_Demo.mp4).
+
+---
+
 ## Project layout
 
 ```
