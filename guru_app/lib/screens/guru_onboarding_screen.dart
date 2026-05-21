@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wtf_shared/wtf_shared.dart';
 
 import '../widgets/onboarding_slide.dart';
-import 'guru_profile_screen.dart';
 
 class GuruOnboardingScreen extends ConsumerStatefulWidget {
   const GuruOnboardingScreen({super.key});
@@ -33,9 +33,7 @@ class _GuruOnboardingScreenState extends ConsumerState<GuruOnboardingScreen> {
     if (!mounted) {
       return;
     }
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute<void>(builder: (_) => const GuruProfileScreen()),
-    );
+    AppNavigation.replaceNamed(context, AppRoutes.guruProfile);
   }
 
   @override

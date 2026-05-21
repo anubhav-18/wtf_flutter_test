@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wtf_shared/wtf_shared.dart';
 
-import 'trainer_dashboard_screen.dart';
-
 class TrainerLoginScreen extends ConsumerWidget {
   const TrainerLoginScreen({super.key});
 
@@ -12,9 +10,7 @@ class TrainerLoginScreen extends ConsumerWidget {
     if (!context.mounted) {
       return;
     }
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute<void>(builder: (_) => const TrainerDashboardScreen()),
-    );
+    AppNavigation.replaceNamed(context, AppRoutes.trainerDashboard);
   }
 
   @override

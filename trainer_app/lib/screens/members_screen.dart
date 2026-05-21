@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wtf_shared/wtf_shared.dart';
 
-import 'member_detail_screen.dart';
-
 class MembersScreen extends ConsumerWidget {
   const MembersScreen({super.key});
 
@@ -34,22 +32,23 @@ class MembersScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(16),
             itemBuilder: (context, index) {
               final member = members[index];
-              final latestMessages = messages
-                  .where(
-                    (message) =>
-                        message.senderId == member.id ||
-                        message.receiverId == member.id,
-                  )
-                  .toList()
-                ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+              final latestMessages =
+                  messages
+                      .where(
+                        (message) =>
+                            message.senderId == member.id ||
+                            message.receiverId == member.id,
+                      )
+                      .toList()
+                    ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
               final requestCount = requests
                   .where((request) => request.memberId == member.id)
                   .length;
               final summary = latestMessages.isNotEmpty
                   ? latestMessages.first.text
                   : requestCount > 0
-                      ? '$requestCount call request(s)'
-                      : 'No interactions yet';
+                  ? '$requestCount call request(s)'
+                  : 'No interactions yet';
               return Card(
                 child: ListTile(
                   leading: CircleAvatar(
@@ -58,10 +57,10 @@ class MembersScreen extends ConsumerWidget {
                   title: Text(member.name),
                   subtitle: Text('Trainer: Aarav • $summary'),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => MemberDetailScreen(member: member),
-                    ),
+                  onTap: () => AppNavigation.pushNamed(
+                    context,
+                    AppRoutes.trainerMemberDetail,
+                    arguments: member,
                   ),
                 ),
               );

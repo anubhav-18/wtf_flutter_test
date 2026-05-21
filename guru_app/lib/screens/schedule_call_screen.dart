@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wtf_shared/wtf_shared.dart';
 
-import 'my_requests_screen.dart';
-
 class ScheduleCallScreen extends ConsumerStatefulWidget {
   const ScheduleCallScreen({super.key});
 
@@ -66,7 +64,9 @@ class _ScheduleCallScreenState extends ConsumerState<ScheduleCallScreen> {
     setState(() {
       _submitting = true;
     });
-    final error = await ref.read(callServiceProvider).requestCall(
+    final error = await ref
+        .read(callServiceProvider)
+        .requestCall(
           scheduledFor: _scheduledFor,
           note: _noteController.text.trim(),
         );
@@ -77,15 +77,11 @@ class _ScheduleCallScreenState extends ConsumerState<ScheduleCallScreen> {
       _submitting = false;
     });
     if (error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+      AppFeedback.showSnackBar(context, error);
       return;
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Call request sent to Aarav.')),
-    );
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute<void>(builder: (_) => const MyRequestsScreen()),
-    );
+    AppFeedback.showSnackBar(context, 'Call request sent to Aarav.');
+    AppNavigation.replaceNamed(context, AppRoutes.guruMyRequests);
   }
 
   @override

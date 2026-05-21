@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wtf_shared/wtf_shared.dart';
 
-import 'guru_dashboard_screen.dart';
-
 class GuruProfileScreen extends ConsumerWidget {
   const GuruProfileScreen({super.key});
 
@@ -12,9 +10,7 @@ class GuruProfileScreen extends ConsumerWidget {
     if (!context.mounted) {
       return;
     }
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute<void>(builder: (_) => const GuruDashboardScreen()),
-    );
+    AppNavigation.replaceNamed(context, AppRoutes.guruDashboard);
   }
 
   @override

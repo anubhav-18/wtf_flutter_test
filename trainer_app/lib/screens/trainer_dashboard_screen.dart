@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:wtf_shared/wtf_shared.dart';
 
 import '../widgets/dashboard_tile.dart';
-import 'members_screen.dart';
-import 'trainer_chat_list_screen.dart';
-import 'trainer_requests_screen.dart';
 
 class TrainerDashboardScreen extends StatelessWidget {
   const TrainerDashboardScreen({super.key});
@@ -23,27 +20,20 @@ class TrainerDashboardScreen extends StatelessWidget {
           DashboardTile(
             title: 'Members',
             icon: Icons.people_outline,
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(builder: (_) => const MembersScreen()),
-            ),
+            onTap: () =>
+                AppNavigation.pushNamed(context, AppRoutes.trainerMembers),
           ),
           DashboardTile(
             title: 'Chats',
             icon: Icons.chat_bubble_outline,
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const TrainerChatListScreen(),
-              ),
-            ),
+            onTap: () =>
+                AppNavigation.pushNamed(context, AppRoutes.trainerChats),
           ),
           DashboardTile(
             title: 'Requests',
             icon: Icons.pending_actions,
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const TrainerRequestsScreen(),
-              ),
-            ),
+            onTap: () =>
+                AppNavigation.pushNamed(context, AppRoutes.trainerRequests),
           ),
           const DashboardTile(title: 'Sessions', icon: Icons.history_outlined),
           const DashboardTile(

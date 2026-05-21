@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wtf_shared/wtf_shared.dart';
 
 import '../widgets/shortcut_tile.dart';
-import 'trainer_conversation_screen.dart';
-import 'trainer_requests_screen.dart';
 
 class MemberDetailScreen extends ConsumerWidget {
   const MemberDetailScreen({super.key, required this.member});
@@ -58,20 +56,14 @@ class MemberDetailScreen extends ConsumerWidget {
           ShortcutTile(
             title: 'Chat',
             icon: Icons.chat_bubble_outline,
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const TrainerConversationScreen(),
-              ),
-            ),
+            onTap: () =>
+                AppNavigation.pushNamed(context, AppRoutes.trainerConversation),
           ),
           ShortcutTile(
             title: 'Requests',
             icon: Icons.pending_actions,
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const TrainerRequestsScreen(),
-              ),
-            ),
+            onTap: () =>
+                AppNavigation.pushNamed(context, AppRoutes.trainerRequests),
           ),
           ShortcutTile(
             title: 'Sessions',

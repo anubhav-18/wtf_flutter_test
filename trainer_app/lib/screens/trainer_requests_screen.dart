@@ -8,10 +8,11 @@ class TrainerRequestsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final requests = ref.watch(callRequestsStreamProvider).value ?? [];
-    final trainerRequests = requests
-        .where((request) => request.trainerId == AppConstants.trainerId)
-        .toList()
-      ..sort(_sortRequests);
+    final trainerRequests =
+        requests
+            .where((request) => request.trainerId == AppConstants.trainerId)
+            .toList()
+          ..sort(_sortRequests);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Requests')),
@@ -126,9 +127,7 @@ class _TrainerRequestCard extends ConsumerWidget {
     if (!context.mounted) {
       return;
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(error ?? 'Request approved.')),
-    );
+    AppFeedback.showSnackBar(context, error ?? 'Request approved.');
   }
 
   Future<void> _decline(BuildContext context, WidgetRef ref) async {
@@ -143,9 +142,7 @@ class _TrainerRequestCard extends ConsumerWidget {
     if (!context.mounted) {
       return;
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Request declined.')),
-    );
+    AppFeedback.showSnackBar(context, 'Request declined.');
   }
 }
 

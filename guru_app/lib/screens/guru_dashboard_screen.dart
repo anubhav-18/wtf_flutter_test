@@ -3,9 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wtf_shared/wtf_shared.dart';
 
 import '../widgets/dashboard_card.dart';
-import 'chat_list_screen.dart';
-import 'my_requests_screen.dart';
-import 'schedule_call_screen.dart';
 
 class GuruDashboardScreen extends ConsumerWidget {
   const GuruDashboardScreen({super.key});
@@ -21,25 +18,19 @@ class GuruDashboardScreen extends ConsumerWidget {
           DashboardCard(
             title: 'Chat with Trainer',
             icon: Icons.chat_bubble_outline,
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(builder: (_) => const ChatListScreen()),
-            ),
+            onTap: () => AppNavigation.pushNamed(context, AppRoutes.guruChats),
           ),
           DashboardCard(
             title: 'Schedule Call',
             icon: Icons.calendar_month_outlined,
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const ScheduleCallScreen(),
-              ),
-            ),
+            onTap: () =>
+                AppNavigation.pushNamed(context, AppRoutes.guruScheduleCall),
           ),
           DashboardCard(
             title: 'My Requests',
             icon: Icons.pending_actions_outlined,
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(builder: (_) => const MyRequestsScreen()),
-            ),
+            onTap: () =>
+                AppNavigation.pushNamed(context, AppRoutes.guruMyRequests),
           ),
           const DashboardCard(
             title: 'Upcoming Calls',

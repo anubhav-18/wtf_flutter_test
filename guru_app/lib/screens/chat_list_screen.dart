@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wtf_shared/wtf_shared.dart';
 
-import 'conversation_screen.dart';
-
 class ChatListScreen extends ConsumerWidget {
   const ChatListScreen({super.key});
 
@@ -17,9 +15,8 @@ class ChatListScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Chat with Trainer')),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(builder: (_) => const ConversationScreen()),
-        ),
+        onPressed: () =>
+            AppNavigation.pushNamed(context, AppRoutes.guruConversation),
         child: const Icon(Icons.add),
       ),
       body: ChatListView(
@@ -28,19 +25,18 @@ class ChatListScreen extends ConsumerWidget {
         peerName: 'Aarav',
         peerInitials: 'A',
         primaryColor: AppColors.guruPrimary,
-        onOpenChat: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(builder: (_) => const ConversationScreen()),
-        ),
+        onOpenChat: () =>
+            AppNavigation.pushNamed(context, AppRoutes.guruConversation),
         onSayHi: () async {
-          await ref.read(chatServiceProvider).sendMessage(
+          await ref
+              .read(chatServiceProvider)
+              .sendMessage(
                 senderId: AppConstants.memberId,
                 receiverId: AppConstants.trainerId,
                 text: 'Hi Coach 👋',
               );
           if (context.mounted) {
-            Navigator.of(context).push(
-              MaterialPageRoute<void>(builder: (_) => const ConversationScreen()),
-            );
+            AppNavigation.pushNamed(context, AppRoutes.guruConversation);
           }
         },
       ),

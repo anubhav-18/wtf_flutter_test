@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../models/message.dart';
 import '../utils/app_colors.dart';
-import '../utils/app_constants.dart';
 import '../utils/date_formatters.dart';
 
 class ConversationView extends StatefulWidget {
@@ -67,14 +66,23 @@ class _ConversationViewState extends State<ConversationView> {
       _sending = true;
       _typing = true;
     });
-    await Future<void>.delayed(AppConstants.typingDelay);
-    await widget.onSend(trimmed);
-    _controller.clear();
-    if (mounted) {
-      setState(() {
-        _sending = false;
-        _typing = false;
-      });
+    try {
+      await Future<void>.delayed(const Duration(milliseconds: 350));
+      if (!mounted) {
+        return;
+      }
+      await widget.onSend(trimmed);
+      if (!mounted) {
+        return;
+      }
+      _controller.clear();
+    } finally {
+      if (mounted) {
+        setState(() {
+          _sending = false;
+          _typing = false;
+        });
+      }
     }
   }
 
@@ -168,9 +176,7 @@ class _MessageBubble extends StatelessWidget {
     if (message.isSystem) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Center(
-          child: Chip(label: Text(message.text)),
-        ),
+        child: Center(child: Chip(label: Text(message.text))),
       );
     }
 
@@ -201,12 +207,17 @@ class _MessageBubble extends StatelessWidget {
               children: [
                 Text(
                   DateFormatters.time(message.createdAt),
-                  style: TextStyle(color: textColor.withValues(alpha: 0.7), fontSize: 11),
+                  style: TextStyle(
+                    color: textColor.withValues(alpha: 0.7),
+                    fontSize: 11,
+                  ),
                 ),
                 if (isMine) ...[
                   const SizedBox(width: 4),
                   Icon(
-                    message.status == MessageStatus.read ? Icons.done_all : Icons.check,
+                    message.status == MessageStatus.read
+                        ? Icons.done_all
+                        : Icons.check,
                     size: 14,
                     color: textColor.withValues(alpha: 0.8),
                   ),

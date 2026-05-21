@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:wtf_shared/wtf_shared.dart';
 
+import '../screens/members_screen.dart';
+import '../screens/member_detail_screen.dart';
+import '../screens/trainer_chat_list_screen.dart';
+import '../screens/trainer_conversation_screen.dart';
+import '../screens/trainer_dashboard_screen.dart';
+import '../screens/trainer_login_screen.dart';
+import '../screens/trainer_requests_screen.dart';
 import '../screens/trainer_splash_screen.dart';
 
 class TrainerApp extends StatelessWidget {
@@ -16,7 +23,26 @@ class TrainerApp extends StatelessWidget {
         scaffoldBackgroundColor: AppColors.background,
         useMaterial3: true,
       ),
-      home: const TrainerSplashScreen(),
+      initialRoute: AppRoutes.trainerSplash,
+      routes: {
+        AppRoutes.trainerSplash: (_) => const TrainerSplashScreen(),
+        AppRoutes.trainerLogin: (_) => const TrainerLoginScreen(),
+        AppRoutes.trainerDashboard: (_) => const TrainerDashboardScreen(),
+        AppRoutes.trainerMembers: (_) => const MembersScreen(),
+        AppRoutes.trainerChats: (_) => const TrainerChatListScreen(),
+        AppRoutes.trainerConversation: (_) => const TrainerConversationScreen(),
+        AppRoutes.trainerRequests: (_) => const TrainerRequestsScreen(),
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == AppRoutes.trainerMemberDetail) {
+          final member = settings.arguments! as AppUser;
+          return MaterialPageRoute<void>(
+            builder: (_) => MemberDetailScreen(member: member),
+            settings: settings,
+          );
+        }
+        return null;
+      },
     );
   }
 }

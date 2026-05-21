@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wtf_shared/wtf_shared.dart';
 
-import 'trainer_dashboard_screen.dart';
-import 'trainer_login_screen.dart';
-
 class TrainerSplashScreen extends ConsumerStatefulWidget {
   const TrainerSplashScreen({super.key});
 
@@ -25,12 +22,9 @@ class _TrainerSplashScreenState extends ConsumerState<TrainerSplashScreen> {
       if (!mounted) {
         return;
       }
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute<void>(
-          builder: (_) => loggedIn
-              ? const TrainerDashboardScreen()
-              : const TrainerLoginScreen(),
-        ),
+      AppNavigation.replaceNamed(
+        context,
+        loggedIn ? AppRoutes.trainerDashboard : AppRoutes.trainerLogin,
       );
     });
   }
