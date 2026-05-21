@@ -46,6 +46,13 @@ cd trainer_app && flutter run
 
 > **Requires Android device / emulator.** Use `flutter devices` to confirm.
 
+### 3 — Build both apps (one command)
+
+To compile both apps at once:
+```bash
+(cd guru_app && flutter build apk) && (cd trainer_app && flutter build apk)
+```
+
 ---
 
 ## Full demo walkthrough
