@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:uuid/uuid.dart';
 
 import '../models/message.dart';
@@ -34,6 +37,30 @@ class ChatRepository extends BasePollingRepository<Message> {
       'isSystem': isSystem,
     });
     DevLogService.add('[CHAT]', 'Message sent by $senderId');
+    await emitCurrent();
+  }
+
+  /// Sends an image or file attachment encoded as base64.
+  Future<void> sendAttachment({
+    required String senderId,
+    required String receiverId,
+    required File file,
+    String? caption,
+  }) async {
+    final bytes = await file.readAsBytes();
+    final base64Data = base64Encode(bytes);
+    final fileName = file.path.split('/').last.split('\\').last;
+    final id = _uuid.v4();
+    await ApiClient.post('/messages', {
+      'id': id,
+      'chatId': AppConstants.chatId,
+      'senderId': senderId,
+      'receiverId': receiverId,
+      'text': caption ?? '',
+      'imageData': base64Data,
+      'fileName': fileName,
+    });
+    DevLogService.add('[CHAT]', 'Attachment sent by $senderId: $fileName');
     await emitCurrent();
   }
 

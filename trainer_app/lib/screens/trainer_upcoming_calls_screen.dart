@@ -8,11 +8,13 @@ class TrainerUpcomingCallsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final requests = ref.watch(callRequestsStreamProvider).value ?? [];
+    final now = DateTime.now();
     final upcoming = requests
         .where(
           (r) =>
               r.status == CallRequestStatus.approved &&
-              r.trainerId == AppConstants.trainerId,
+              r.trainerId == AppConstants.trainerId &&
+              r.scheduledFor.isAfter(now.subtract(const Duration(minutes: 30))),
         )
         .toList()
       ..sort((a, b) => a.scheduledFor.compareTo(b.scheduledFor));

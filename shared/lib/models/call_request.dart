@@ -2,7 +2,8 @@ enum CallRequestStatus {
   pending,
   approved,
   declined,
-  cancelled;
+  cancelled,
+  completed;
 
   String toJson() => name;
 

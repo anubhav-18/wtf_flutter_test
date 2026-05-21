@@ -21,11 +21,7 @@ class GuruApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Guru App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.guruPrimary),
-        scaffoldBackgroundColor: AppColors.background,
-        useMaterial3: true,
-      ),
+      theme: AppTheme.guru,
       initialRoute: AppRoutes.guruSplash,
       routes: {
         AppRoutes.guruSplash: (_) => const GuruSplashScreen(),

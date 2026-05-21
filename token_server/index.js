@@ -8,15 +8,31 @@ const app = express();
 const port = Number(process.env.PORT || 4000);
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' })); // allow image payloads
 
 // ─── In-memory shared data store ─────────────────────────────────────────────
-// Resets on server restart — fine for local demo.
 
 const store = {
-  messages: {},       // id → Message
-  callRequests: {},   // id → CallRequest
-  sessionLogs: {},    // id → SessionLog
+  messages: {},
+  callRequests: {},
+  sessionLogs: {},
+  users: {
+    dk: {
+      id: 'dk',
+      role: 'member',
+      name: 'DK',
+      email: 'dk@wtf.local',
+      avatarUrl: 'DK',
+      assignedTrainerId: 'aarav',
+    },
+    aarav: {
+      id: 'aarav',
+      role: 'trainer',
+      name: 'Aarav',
+      email: 'aarav@wtf.local',
+      avatarUrl: 'A',
+    },
+  },
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -38,7 +54,22 @@ function nowIso() {
 // ─── Health ───────────────────────────────────────────────────────────────────
 
 app.get('/health', (_req, res) => {
-  res.json({ ok: true, messages: Object.keys(store.messages).length });
+  res.json({ ok: true, messages: Object.keys(store.messages).length, users: Object.keys(store.users).length });
+});
+
+// ─── Users API ────────────────────────────────────────────────────────────────
+
+// GET /users
+app.get('/users', (_req, res) => {
+  res.json(Object.values(store.users));
+});
+
+// PATCH /users/:id  → update name etc
+app.patch('/users/:id', (req, res) => {
+  const { id } = req.params;
+  if (!store.users[id]) return res.status(404).json({ error: 'Not found' });
+  Object.assign(store.users[id], req.body);
+  res.json(store.users[id]);
 });
 
 // ─── 100ms Token ──────────────────────────────────────────────────────────────
@@ -86,24 +117,26 @@ app.get('/messages', (req, res) => {
   res.json(msgs);
 });
 
-// POST /messages  → body: { id, chatId, senderId, receiverId, text, isSystem? }
+// POST /messages  → body: { id, chatId, senderId, receiverId, text, isSystem?, imageData?, fileName? }
 app.post('/messages', (req, res) => {
-  const { id, chatId, senderId, receiverId, text, isSystem } = req.body;
-  if (!id || !senderId || !text) {
-    return res.status(400).json({ error: 'id, senderId, text required' });
+  const { id, chatId, senderId, receiverId, text, isSystem, imageData, fileName } = req.body;
+  if (!id || !senderId) {
+    return res.status(400).json({ error: 'id and senderId required' });
   }
   const msg = {
     id,
     chatId: chatId || 'dk_aarav',
     senderId,
     receiverId,
-    text,
+    text: text || '',
     createdAt: nowIso(),
     status: 'sent',
     isSystem: isSystem || false,
+    imageData: imageData || null,
+    fileName: fileName || null,
   };
   store.messages[id] = msg;
-  console.log(`[CHAT] ${senderId}: ${text.substring(0, 40)}`);
+  console.log(`[CHAT] ${senderId}: ${(text || '[attachment]').substring(0, 40)}`);
   res.status(201).json(msg);
 });
 
@@ -196,6 +229,9 @@ app.patch('/call-requests/:id', (req, res) => {
       isSystem: true,
     };
     console.log(`[SCHEDULE] Declined ${id}`);
+  } else if (status === 'completed') {
+    existing.status = 'completed';
+    console.log(`[SCHEDULE] Completed ${id}`);
   }
 
   res.json(existing);
@@ -232,5 +268,5 @@ app.patch('/session-logs/:id', (req, res) => {
 
 app.listen(port, () => {
   console.log(`✅ WTF backend + 100ms token server on http://localhost:${port}`);
-  console.log(`   /health  /token  /messages  /call-requests  /session-logs`);
+  console.log(`   /health  /token  /users  /messages  /call-requests  /session-logs`);
 });

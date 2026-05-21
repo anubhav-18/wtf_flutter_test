@@ -304,7 +304,21 @@ class HmsService implements HMSUpdateListener, HMSActionResultListener {
   void onPeerListUpdate({
     required List<HMSPeer> addedPeers,
     required List<HMSPeer> removedPeers,
-  }) {}
+  }) {
+    DevLogService.add('[RTC]', 'onPeerListUpdate added=${addedPeers.length} removed=${removedPeers.length}');
+    for (final peer in addedPeers) {
+      if (peer.isLocal) {
+        _emit(_state.copyWith(localPeer: peer));
+      } else {
+        _emit(_state.copyWith(remotePeer: peer));
+      }
+    }
+    for (final peer in removedPeers) {
+      if (!peer.isLocal && _state.remotePeer?.peerId == peer.peerId) {
+        _emit(_state.copyWith(forceNullRemote: true));
+      }
+    }
+  }
 
   // ── HMSActionResultListener ───────────────────────────────────────────────
 

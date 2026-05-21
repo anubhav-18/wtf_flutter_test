@@ -94,6 +94,7 @@ class _StatusChip extends StatelessWidget {
       CallRequestStatus.approved => AppColors.success,
       CallRequestStatus.declined => AppColors.error,
       CallRequestStatus.cancelled => AppColors.muted,
+      CallRequestStatus.completed => Colors.blueGrey,
     };
 
     return Chip(

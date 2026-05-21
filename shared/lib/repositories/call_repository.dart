@@ -74,4 +74,10 @@ class CallRepository extends BasePollingRepository<CallRequest> {
     DevLogService.add('[SCHEDULE]', 'Call declined $requestId');
     await emitCurrent();
   }
+
+  Future<void> markCompleted(String requestId) async {
+    await ApiClient.patch('/call-requests/$requestId', {'status': 'completed'});
+    DevLogService.add('[SCHEDULE]', 'Call completed $requestId');
+    await emitCurrent();
+  }
 }

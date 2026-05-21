@@ -4,5 +4,6 @@ export 'app_feedback.dart';
 export 'app_logger.dart';
 export 'app_navigation.dart';
 export 'app_routes.dart';
+export 'app_theme.dart';
 export 'date_formatters.dart';
 export 'validators.dart';

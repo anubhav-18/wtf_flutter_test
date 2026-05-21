@@ -27,13 +27,19 @@ class ConversationScreen extends ConsumerWidget {
         currentUserId: AppConstants.memberId,
         peerName: 'Aarav',
         primaryColor: AppColors.guruPrimary,
-        onMarkRead: () => ref
-            .read(chatRepositoryProvider)
-            .markRead(AppConstants.memberId),
+        onMarkRead: () =>
+            ref.read(chatRepositoryProvider).markRead(AppConstants.memberId),
         onSend: (text) => ref.read(chatServiceProvider).sendMessage(
               senderId: AppConstants.memberId,
               receiverId: AppConstants.trainerId,
               text: text,
+            ),
+        onSendAttachment: (file) => ref
+            .read(chatRepositoryProvider)
+            .sendAttachment(
+              senderId: AppConstants.memberId,
+              receiverId: AppConstants.trainerId,
+              file: file,
             ),
       ),
     );

@@ -36,7 +36,7 @@ class ApiClient {
           .post(uri,
               headers: {'Content-Type': 'application/json'},
               body: jsonEncode(body))
-          .timeout(const Duration(seconds: 5));
+          .timeout(const Duration(seconds: 30)); // 30s for image payloads
       if (res.statusCode == 200 || res.statusCode == 201) {
         return jsonDecode(res.body) as Map<String, dynamic>;
       }

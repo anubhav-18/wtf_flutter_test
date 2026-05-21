@@ -21,11 +21,7 @@ class TrainerApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Trainer App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.trainerPrimary),
-        scaffoldBackgroundColor: AppColors.background,
-        useMaterial3: true,
-      ),
+      theme: AppTheme.trainer,
       initialRoute: AppRoutes.trainerSplash,
       routes: {
         AppRoutes.trainerSplash: (_) => const TrainerSplashScreen(),
