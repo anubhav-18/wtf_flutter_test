@@ -10,7 +10,7 @@ class AppConstants {
   static const joinWindow = Duration(minutes: 10);
 
   /// Injected at build time via:
-  ///   flutter run --dart-define=TOKEN_SERVER_URL=http://<ip>:4000
+  ///   flutter run --dart-define=TOKEN_SERVER_URL=http://YOUR_LAN_IP:4000
   /// Defaults to Android emulator alias (10.0.2.2) if not specified.
   static const tokenServerBaseUrl = String.fromEnvironment(
     'TOKEN_SERVER_URL',
