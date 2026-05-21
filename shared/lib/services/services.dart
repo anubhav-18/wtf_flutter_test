@@ -1,3 +1,4 @@
+export 'api_client.dart';
 export 'auth_service.dart';
 export 'app_bootstrap.dart';
 export 'call_service.dart';

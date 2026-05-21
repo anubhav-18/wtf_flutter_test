@@ -1,8 +1,8 @@
 import 'package:uuid/uuid.dart';
 
 import '../models/session_log.dart';
+import '../services/api_client.dart';
 import '../services/dev_log_service.dart';
-import '../services/hive_storage_service.dart';
 import '../utils/app_constants.dart';
 import 'base_polling_repository.dart';
 
@@ -11,11 +11,8 @@ class SessionLogRepository extends BasePollingRepository<SessionLog> {
 
   @override
   Future<List<SessionLog>> load() async {
-    return HiveStorageService.sessionLogs()
-        .values
-        .map((json) => SessionLog.fromJson(Map<String, dynamic>.from(json)))
-        .toList()
-      ..sort((a, b) => b.startedAt.compareTo(a.startedAt));
+    final list = await ApiClient.getList('/session-logs');
+    return list.map((json) => SessionLog.fromJson(json)).toList();
   }
 
   Future<SessionLog> createFromCall({
@@ -37,14 +34,14 @@ class SessionLogRepository extends BasePollingRepository<SessionLog> {
       trainerNotes: trainerNotes,
       memberNotes: memberNotes,
     );
-    await HiveStorageService.sessionLogs().put(log.id, log.toJson());
+    await ApiClient.post('/session-logs', log.toJson());
     DevLogService.add('[RTC]', 'Session log created ${log.id} (${log.durationSec}s)');
     await emitCurrent();
     return log;
   }
 
   Future<void> updateLog(SessionLog log) async {
-    await HiveStorageService.sessionLogs().put(log.id, log.toJson());
+    await ApiClient.patch('/session-logs/${log.id}', log.toJson());
     DevLogService.add('[LOG]', 'Session log updated ${log.id}');
     await emitCurrent();
   }
