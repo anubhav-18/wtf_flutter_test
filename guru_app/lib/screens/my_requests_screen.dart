@@ -16,9 +16,13 @@ class MyRequestsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('My Requests')),
       body: myRequests.isEmpty
-          ? const EmptyState(
+          ? EmptyState(
               title: 'No call requests yet.',
               actionLabel: 'Schedule a call',
+              onAction: () => AppNavigation.pushNamed(
+                context,
+                AppRoutes.guruScheduleCall,
+              ),
             )
           : ListView.separated(
               padding: const EdgeInsets.all(16),
