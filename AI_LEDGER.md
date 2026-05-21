@@ -193,3 +193,32 @@ flutter analyze trainer_app: No issues found
 **Commit**: `refactor: split app ui into screen files`
 
 **Decision**: Keep each app entry point minimal and place UI by responsibility so upcoming chat, scheduler, calls, and sessions can be implemented without bloating `main.dart`.
+
+---
+
+## Prompt #10
+
+**Timestamp**: 2026-05-21 17:05 IST
+
+**Tool**: Cascade
+
+**Intent**: Generation
+
+**Prompt**: `Start Implementing Next Phase. Implement chat list + conversation UI with send/read state, quick replies, empty CTA, and navigation from both dashboards/member detail.`
+
+**Output Summary**: Created shared reusable chat widgets `ChatListView` and `ConversationView` with quick replies, typing indicator, read receipts, and empty state CTA. Implemented Guru chat screens `ChatListScreen` and `ConversationScreen` wired to dashboard. Implemented Trainer chat screens `TrainerChatListScreen` and `TrainerConversationScreen`. Wired Trainer dashboard "Chats" tile and member detail "Chat" shortcut to navigation.
+
+**Debugging Evidence**:
+
+```text
+flutter analyze guru_app: No issues found
+flutter analyze trainer_app: No issues found
+```
+
+**Files Modified**: `shared/lib/widgets/chat_list_view.dart`, `shared/lib/widgets/conversation_view.dart`, `shared/lib/widgets/widgets.dart`, `guru_app/lib/screens/chat_list_screen.dart`, `guru_app/lib/screens/conversation_screen.dart`, `guru_app/lib/widgets/dashboard_card.dart`, `guru_app/lib/screens/guru_dashboard_screen.dart`, `trainer_app/lib/screens/trainer_chat_list_screen.dart`, `trainer_app/lib/screens/trainer_conversation_screen.dart`, `trainer_app/lib/screens/trainer_dashboard_screen.dart`, `trainer_app/lib/screens/member_detail_screen.dart`
+
+**Commit**: `feat: implement chat ui`
+
+**Decision**: Use shared widgets for chat UI to avoid duplication between Guru and Trainer apps. Parameterize with currentUserId, peerName, and primaryColor for app-specific styling.
+
+---

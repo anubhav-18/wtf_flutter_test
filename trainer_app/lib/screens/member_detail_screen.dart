@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wtf_shared/wtf_shared.dart';
 
 import '../widgets/shortcut_tile.dart';
+import 'trainer_conversation_screen.dart';
 
 class MemberDetailScreen extends ConsumerWidget {
   const MemberDetailScreen({super.key, required this.member});
@@ -12,10 +13,9 @@ class MemberDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final requests = ref.watch(callRequestsStreamProvider).value ?? [];
-    final memberRequests = requests
-        .where((request) => request.memberId == member.id)
-        .toList()
-      ..sort((a, b) => b.scheduledFor.compareTo(a.scheduledFor));
+    final memberRequests =
+        requests.where((request) => request.memberId == member.id).toList()
+          ..sort((a, b) => b.scheduledFor.compareTo(a.scheduledFor));
 
     return Scaffold(
       appBar: AppBar(title: Text(member.name)),
@@ -57,7 +57,11 @@ class MemberDetailScreen extends ConsumerWidget {
           ShortcutTile(
             title: 'Chat',
             icon: Icons.chat_bubble_outline,
-            onTap: () => _showComingNext(context, 'Chat'),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const TrainerConversationScreen(),
+              ),
+            ),
           ),
           ShortcutTile(
             title: 'Requests',
@@ -81,10 +85,14 @@ class MemberDetailScreen extends ConsumerWidget {
               actionLabel: 'Back to member',
             )
           else
-            ...memberRequests.take(3).map(
+            ...memberRequests
+                .take(3)
+                .map(
                   (request) => Card(
                     child: ListTile(
-                      title: Text(DateFormatters.dateTime(request.scheduledFor)),
+                      title: Text(
+                        DateFormatters.dateTime(request.scheduledFor),
+                      ),
                       subtitle: Text(
                         request.note.isEmpty ? 'No note' : request.note,
                       ),
@@ -98,8 +106,8 @@ class MemberDetailScreen extends ConsumerWidget {
   }
 
   void _showComingNext(BuildContext context, String title) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$title is in the next plan step.')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('$title is in the next plan step.')));
   }
 }

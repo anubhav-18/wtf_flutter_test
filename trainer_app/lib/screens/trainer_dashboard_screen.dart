@@ -3,6 +3,7 @@ import 'package:wtf_shared/wtf_shared.dart';
 
 import '../widgets/dashboard_tile.dart';
 import 'members_screen.dart';
+import 'trainer_chat_list_screen.dart';
 
 class TrainerDashboardScreen extends StatelessWidget {
   const TrainerDashboardScreen({super.key});
@@ -25,7 +26,15 @@ class TrainerDashboardScreen extends StatelessWidget {
               MaterialPageRoute<void>(builder: (_) => const MembersScreen()),
             ),
           ),
-          const DashboardTile(title: 'Chats', icon: Icons.chat_bubble_outline),
+          DashboardTile(
+            title: 'Chats',
+            icon: Icons.chat_bubble_outline,
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const TrainerChatListScreen(),
+              ),
+            ),
+          ),
           const DashboardTile(title: 'Requests', icon: Icons.pending_actions),
           const DashboardTile(title: 'Sessions', icon: Icons.history_outlined),
           const DashboardTile(

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wtf_shared/wtf_shared.dart';
 
 import '../widgets/dashboard_card.dart';
+import 'chat_list_screen.dart';
 
 class GuruDashboardScreen extends ConsumerWidget {
   const GuruDashboardScreen({super.key});
@@ -14,24 +15,27 @@ class GuruDashboardScreen extends ConsumerWidget {
       floatingActionButton: const DevPanelButton(),
       body: ListView(
         padding: const EdgeInsets.all(16),
-        children: const [
+        children: [
           DashboardCard(
             title: 'Chat with Trainer',
             icon: Icons.chat_bubble_outline,
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const ChatListScreen()),
+            ),
           ),
-          DashboardCard(
+          const DashboardCard(
             title: 'Schedule Call',
             icon: Icons.calendar_month_outlined,
           ),
-          DashboardCard(
+          const DashboardCard(
             title: 'My Requests',
             icon: Icons.pending_actions_outlined,
           ),
-          DashboardCard(
+          const DashboardCard(
             title: 'Upcoming Calls',
             icon: Icons.video_call_outlined,
           ),
-          DashboardCard(title: 'My Sessions', icon: Icons.history_outlined),
+          const DashboardCard(title: 'My Sessions', icon: Icons.history_outlined),
         ],
       ),
     );
