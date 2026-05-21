@@ -44,7 +44,7 @@ function requireEnv(name) {
 }
 
 function mapRole(role) {
-  return role === 'trainer' ? 'trainer' : 'member';
+  return role === 'trainer' ? 'host' : 'guest';
 }
 
 function nowIso() {
