@@ -226,7 +226,7 @@ class _RemoteVideoTile extends StatelessWidget {
 
     // Show avatar if peer has no video track, camera is off, or track isn't ready.
     final videoTrack = remotePeer?.videoTrack;
-    if (videoTrack == null || videoTrack.isMute || videoTrack.trackId == null || videoTrack.trackId!.isEmpty) {
+    if (videoTrack == null || videoTrack.isMute || videoTrack.trackId.isEmpty) {
       return Container(
         color: const Color(0xFF0D1117),
         child: Center(
@@ -261,7 +261,7 @@ class _SelfPreviewTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final videoTrack = localPeer?.videoTrack;
-    final isTrackReady = videoTrack != null && videoTrack.trackId != null && videoTrack.trackId!.isNotEmpty;
+    final isTrackReady = videoTrack != null && videoTrack.trackId.isNotEmpty;
     
     return Container(
       width: 90,

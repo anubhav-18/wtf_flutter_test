@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-
+import 'dart:io';
 
 import 'package:hmssdk_flutter/hmssdk_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:permission_handler/permission_handler.dart';
 
 import '../models/app_role.dart';
 import '../utils/app_constants.dart';
@@ -60,25 +61,19 @@ class HmsRoomState {
 /// Thin wrapper around [HMSSDK] for the WTF assessment.
 ///
 /// Responsibilities:
+/// - Request camera/mic permissions at runtime (required by 100ms).
 /// - Fetch a short-lived JWT from the local token server.
 /// - Join / leave a 100ms room.
 /// - Toggle mic / camera / flip camera.
 /// - Emit [HmsRoomState] updates via a [Stream].
-/// - Auto-reconnect up to [_maxReconnectAttempts] times on error.
 class HmsService implements HMSUpdateListener, HMSActionResultListener {
   HmsService();
-
-  static const int _maxReconnectAttempts = 3;
 
   HMSSDK? _hmsdk;
   final StreamController<HmsRoomState> _stateController =
       StreamController<HmsRoomState>.broadcast();
 
   HmsRoomState _state = const HmsRoomState();
-  int _reconnectAttempts = 0;
-  String? _lastToken;
-  String? _lastUserId;
-  String? _lastRole;
 
   Stream<HmsRoomState> get stream => _stateController.stream;
   HmsRoomState get currentState => _state;
@@ -88,6 +83,23 @@ class HmsService implements HMSUpdateListener, HMSActionResultListener {
     if (!_stateController.isClosed) {
       _stateController.add(_state);
     }
+  }
+
+  // ── Permissions ───────────────────────────────────────────────────────────
+
+  /// Requests camera and microphone permissions at runtime.
+  /// Returns true if both are granted.
+  Future<bool> _requestPermissions() async {
+    if (Platform.isIOS) return true; // iOS handles via Info.plist prompts
+
+    final cameraStatus = await Permission.camera.request();
+    final micStatus = await Permission.microphone.request();
+    // Bluetooth connect is needed for Android 12+ headset support
+    await Permission.bluetoothConnect.request();
+
+    DevLogService.add('[RTC]', 'Permissions: camera=$cameraStatus mic=$micStatus');
+
+    return cameraStatus.isGranted && micStatus.isGranted;
   }
 
   // ── Token ─────────────────────────────────────────────────────────────────
@@ -115,7 +127,10 @@ class HmsService implements HMSUpdateListener, HMSActionResultListener {
 
   // ── Join / Leave ──────────────────────────────────────────────────────────
 
-  /// Joins the 100ms room. Fetches token first, then calls [HMSSDK.join].
+  /// Joins the 100ms room.
+  /// 1. Requests runtime permissions first.
+  /// 2. Fetches token from local server.
+  /// 3. Builds HMSSDK and joins.
   Future<void> join({
     required String userId,
     required AppRole role,
@@ -123,12 +138,21 @@ class HmsService implements HMSUpdateListener, HMSActionResultListener {
   }) async {
     _emit(_state.copyWith(isConnecting: true, clearError: true));
     try {
+      // Step 1: Request permissions BEFORE joining
+      final granted = await _requestPermissions();
+      if (!granted) {
+        _emit(_state.copyWith(
+          isConnecting: false,
+          error: 'Camera and microphone permissions are required for video calls.',
+        ));
+        return;
+      }
+
+      // Step 2: Fetch auth token
       final token = preFetchedToken ??
           await fetchToken(userId: userId, role: role);
-      _lastToken = token;
-      _lastUserId = userId;
-      _lastRole = role.name;
 
+      // Step 3: Build SDK (only once)
       if (_hmsdk == null) {
         final sdk = HMSSDK();
         await sdk.build();
@@ -136,6 +160,7 @@ class HmsService implements HMSUpdateListener, HMSActionResultListener {
         _hmsdk = sdk;
       }
 
+      // Step 4: Join room
       final config = HMSConfig(
         authToken: token,
         userName: userId,
@@ -160,7 +185,6 @@ class HmsService implements HMSUpdateListener, HMSActionResultListener {
   void _teardown() {
     _hmsdk?.removeUpdateListener(listener: this);
     _hmsdk = null;
-    _reconnectAttempts = 0;
     _emit(const HmsRoomState());
   }
 
@@ -188,7 +212,6 @@ class HmsService implements HMSUpdateListener, HMSActionResultListener {
   @override
   void onJoin({required HMSRoom room}) {
     DevLogService.add('[RTC]', 'onJoin roomId=${room.id}');
-    _reconnectAttempts = 0;
     _emit(_state.copyWith(isJoined: true, isConnecting: false, isReconnecting: false));
   }
 
@@ -223,39 +246,16 @@ class HmsService implements HMSUpdateListener, HMSActionResultListener {
 
   @override
   void onHMSError({required HMSException error}) {
-    DevLogService.add('[RTC]', 'onHMSError ${error.message}');
-    _tryReconnect(error.message ?? 'Unknown error');
-  }
-
-  Future<void> _tryReconnect(String errorMessage) async {
-    if (_reconnectAttempts >= _maxReconnectAttempts ||
-        _lastToken == null ||
-        _lastUserId == null ||
-        _lastRole == null) {
-      _emit(_state.copyWith(
-        isJoined: false,
-        isConnecting: false,
-        isReconnecting: false,
-        error: errorMessage,
-      ));
-      _teardown();
-      return;
-    }
-    _reconnectAttempts++;
-    DevLogService.add('[RTC]', 'Reconnect attempt $_reconnectAttempts');
-    _emit(_state.copyWith(isReconnecting: true, clearError: true));
-    await Future<void>.delayed(const Duration(seconds: 2));
-    await join(
-      userId: _lastUserId!,
-      role: AppRole.fromJson(_lastRole!),
-      preFetchedToken: _lastToken,
-    );
+    DevLogService.add('[RTC]', 'onHMSError code=${error.code} ${error.message}');
+    // Don't auto-reconnect — just show the error.
+    // The 100ms SDK handles internal reconnection itself via
+    // onReconnecting / onReconnected callbacks.
+    _emit(_state.copyWith(error: error.message ?? 'Unknown error'));
   }
 
   @override
   void onRoomUpdate({required HMSRoom room, required HMSRoomUpdate update}) {
     DevLogService.add('[RTC]', 'onRoomUpdate $update');
-    if (update == HMSRoomUpdate.serverRecordingStateUpdated) return;
   }
 
   @override
@@ -275,7 +275,6 @@ class HmsService implements HMSUpdateListener, HMSActionResultListener {
   @override
   void onReconnected() {
     DevLogService.add('[RTC]', 'onReconnected');
-    _reconnectAttempts = 0;
     _emit(_state.copyWith(isReconnecting: false, isJoined: true));
   }
 
