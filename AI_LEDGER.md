@@ -222,3 +222,29 @@ flutter analyze trainer_app: No issues found
 **Decision**: Use shared widgets for chat UI to avoid duplication between Guru and Trainer apps. Parameterize with currentUserId, peerName, and primaryColor for app-specific styling.
 
 ---
+
+## Prompt #11
+
+**Timestamp**: 2026-05-21 17:15 IST
+
+**Tool**: Cascade
+
+**Intent**: Generation
+
+**Prompt**: `Start Implementing Next Phase. And also state how much left out of 100, and what tasks as well.`
+
+**Output Summary**: Implemented the Guru `MyRequestsScreen` using `callRequestsStreamProvider`. The screen lists member requests across pending, approved, declined, and cancelled statuses, displays scheduled time, note, requested-relative time, and declined reason where available. Wired the Guru dashboard `My Requests` card to open the screen.
+
+**Debugging Evidence**:
+
+```text
+flutter analyze guru_app: No issues found
+```
+
+**Files Modified**: `guru_app/lib/screens/my_requests_screen.dart`, `guru_app/lib/screens/guru_dashboard_screen.dart`, `AI_LEDGER.md`
+
+**Commit**: (pending)
+
+**Decision**: Keep request history as a read-only member-facing view for this phase; request creation and trainer approval actions remain separate scheduler/request-management phases.
+
+---
