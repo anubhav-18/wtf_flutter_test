@@ -166,3 +166,30 @@ Target of URI doesn't exist: package:flutter_riverpod/flutter_riverpod.dart
 **Commit**: `chore: repair ai ledger and dependency versions`
 
 **Decision**: Ledger entries should read like audit evidence, not generic summaries.
+
+---
+
+## Prompt #9
+
+**Timestamp**: 2026-05-21 16:45 IST
+
+**Tool**: Cascade
+
+**Intent**: Refactor
+
+**Prompt**: `For UI, make proper file. Do not combine every code in single main.dart. Make a proper folder structure.`
+
+**Output Summary**: Refactored both Flutter apps so `main.dart` only bootstraps dependencies and runs the app. Moved Guru UI into `app/`, `screens/`, and `widgets/`. Moved Trainer UI into `app/`, `screens/`, and `widgets/`. Added the Trainer Members CRM screen and member detail screen as the next planned UI module.
+
+**Debugging Evidence**:
+
+```text
+flutter analyze guru_app: No issues found
+flutter analyze trainer_app: No issues found
+```
+
+**Files Modified**: `guru_app/lib/main.dart`, `guru_app/lib/app/guru_app.dart`, `guru_app/lib/screens/*`, `guru_app/lib/widgets/*`, `trainer_app/lib/main.dart`, `trainer_app/lib/app/trainer_app.dart`, `trainer_app/lib/screens/*`, `trainer_app/lib/widgets/*`
+
+**Commit**: `refactor: split app ui into screen files`
+
+**Decision**: Keep each app entry point minimal and place UI by responsibility so upcoming chat, scheduler, calls, and sessions can be implemented without bloating `main.dart`.
