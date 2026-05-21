@@ -129,16 +129,18 @@ class HmsService implements HMSUpdateListener, HMSActionResultListener {
       _lastUserId = userId;
       _lastRole = role.name;
 
-      final sdk = HMSSDK();
-      await sdk.build();
-      sdk.addUpdateListener(listener: this);
-      _hmsdk = sdk;
+      if (_hmsdk == null) {
+        final sdk = HMSSDK();
+        await sdk.build();
+        sdk.addUpdateListener(listener: this);
+        _hmsdk = sdk;
+      }
 
       final config = HMSConfig(
         authToken: token,
         userName: userId,
       );
-      sdk.join(config: config);
+      _hmsdk!.join(config: config);
       DevLogService.add('[RTC]', 'join() called for $userId as ${role.name}');
     } catch (e) {
       DevLogService.add('[RTC]', 'join() error: $e');

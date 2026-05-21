@@ -224,9 +224,9 @@ class _RemoteVideoTile extends StatelessWidget {
       );
     }
 
-    // Show avatar if peer has no video track or camera is off.
+    // Show avatar if peer has no video track, camera is off, or track isn't ready.
     final videoTrack = remotePeer?.videoTrack;
-    if (videoTrack == null || videoTrack.isMute) {
+    if (videoTrack == null || videoTrack.isMute || videoTrack.trackId == null || videoTrack.trackId!.isEmpty) {
       return Container(
         color: const Color(0xFF0D1117),
         child: Center(
@@ -243,7 +243,7 @@ class _RemoteVideoTile extends StatelessWidget {
     }
 
     return HMSVideoView(
-      track: videoTrack!,
+      track: videoTrack,
       scaleType: ScaleType.SCALE_ASPECT_FILL,
     );
   }
@@ -261,6 +261,8 @@ class _SelfPreviewTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final videoTrack = localPeer?.videoTrack;
+    final isTrackReady = videoTrack != null && videoTrack.trackId != null && videoTrack.trackId!.isNotEmpty;
+    
     return Container(
       width: 90,
       height: 130,
@@ -270,7 +272,7 @@ class _SelfPreviewTile extends StatelessWidget {
         border: Border.all(color: Colors.white24),
       ),
       clipBehavior: Clip.hardEdge,
-      child: (!cameraEnabled || videoTrack == null)
+      child: (!cameraEnabled || !isTrackReady)
           ? const Center(
               child: Icon(Icons.person_rounded, color: Colors.white38, size: 36),
             )
