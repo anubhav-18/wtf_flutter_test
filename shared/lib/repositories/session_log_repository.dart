@@ -18,7 +18,7 @@ class SessionLogRepository extends BasePollingRepository<SessionLog> {
       ..sort((a, b) => b.startedAt.compareTo(a.startedAt));
   }
 
-  Future<void> createFromCall({
+  Future<SessionLog> createFromCall({
     required DateTime startedAt,
     required DateTime endedAt,
     int? rating,
@@ -38,7 +38,14 @@ class SessionLogRepository extends BasePollingRepository<SessionLog> {
       memberNotes: memberNotes,
     );
     await HiveStorageService.sessionLogs().put(log.id, log.toJson());
-    DevLogService.add('[RTC]', 'Session log created ${log.id}');
+    DevLogService.add('[RTC]', 'Session log created ${log.id} (${log.durationSec}s)');
+    await emitCurrent();
+    return log;
+  }
+
+  Future<void> updateLog(SessionLog log) async {
+    await HiveStorageService.sessionLogs().put(log.id, log.toJson());
+    DevLogService.add('[LOG]', 'Session log updated ${log.id}');
     await emitCurrent();
   }
 

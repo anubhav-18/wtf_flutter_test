@@ -11,6 +11,7 @@ import '../repositories/user_repository.dart';
 import '../services/auth_service.dart';
 import '../services/call_service.dart';
 import '../services/chat_service.dart';
+import '../services/hms_service.dart';
 import '../services/log_service.dart';
 
 final chatRepositoryProvider = Provider<ChatRepository>((ref) {
@@ -53,6 +54,18 @@ final callServiceProvider = Provider<CallService>((ref) {
 
 final logServiceProvider = Provider<LogService>((ref) {
   return LogService(repository: ref.watch(sessionLogRepositoryProvider));
+});
+
+/// One HmsService per in-call screen lifetime.
+/// Use `ProviderScope.overrides` or `.autoDispose` at the in-call route level.
+final hmsServiceProvider = Provider.autoDispose<HmsService>((ref) {
+  final service = HmsService();
+  ref.onDispose(service.dispose);
+  return service;
+});
+
+final hmsStateProvider = StreamProvider.autoDispose<HmsRoomState>((ref) {
+  return ref.watch(hmsServiceProvider).stream;
 });
 
 final usersStreamProvider = StreamProvider<List<AppUser>>((ref) {
