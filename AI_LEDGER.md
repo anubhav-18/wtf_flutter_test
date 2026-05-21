@@ -64,11 +64,31 @@ This ledger records AI-assisted work for the WTF Flutter Engineer assessment. Ta
 
 ## Prompt #4
 
+**Timestamp**: 2026-05-21 15:48 IST
+
+**Tool**: Cascade
+
+**Intent**: Generation
+
+**Prompt**: Continue implementation chunk by chunk according to the plan.
+
+**Output Summary**: Scaffolded the shared package, token server, base models, utilities, polling repository base, concrete repositories, services, Riverpod providers, and shared widgets. Resolved dependency setup and verified shared package analysis passes.
+
+**Files Modified**: `shared/`, `token_server/`, `guru_app/pubspec.yaml`, `trainer_app/pubspec.yaml`, `AI_LEDGER.md`
+
+**Commit**: Pending
+
+**Decision**: Implemented models manually with immutable classes, JSON helpers, `copyWith`, equality, and no code generation to reduce setup time.
+
+---
+
+## Prompt #5
+
 **Timestamp**: TBD
 
 **Tool**: TBD
 
-**Intent**: Generation
+**Intent**: Debugging
 
 **Prompt**: TBD
 

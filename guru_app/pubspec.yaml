@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  wtf_shared:
+    path: ../shared
 
 dev_dependencies:
   flutter_test:
