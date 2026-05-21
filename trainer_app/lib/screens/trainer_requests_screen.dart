@@ -127,7 +127,11 @@ class _TrainerRequestCard extends ConsumerWidget {
     if (!context.mounted) {
       return;
     }
-    AppFeedback.showSnackBar(context, error ?? 'Request approved.');
+    AppFeedback.showSnackBar(
+      context, 
+      error ?? 'Request approved.',
+      isError: error != null,
+    );
   }
 
   Future<void> _decline(BuildContext context, WidgetRef ref) async {

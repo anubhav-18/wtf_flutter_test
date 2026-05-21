@@ -77,10 +77,13 @@ class _ScheduleCallScreenState extends ConsumerState<ScheduleCallScreen> {
       _submitting = false;
     });
     if (error != null) {
-      AppFeedback.showSnackBar(context, error);
+      AppFeedback.showSnackBar(context, error, isError: true);
       return;
     }
-    AppFeedback.showSnackBar(context, 'Call request sent to Aarav.');
+    AppFeedback.showSnackBar(
+      context,
+      'Call requested. Waiting for trainer approval.',
+    );
     AppNavigation.replaceNamed(context, AppRoutes.guruMyRequests);
   }
 

@@ -9,16 +9,32 @@ class TrainerConversationScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final messages = ref.watch(messagesStreamProvider).value ?? [];
     final chatMessages = messages
-        .where((message) => message.chatId == AppConstants.chatId)
+        .where((m) => m.chatId == AppConstants.chatId)
         .toList();
+
+    // Upcoming approved call (for camera badge)
+    final requests = ref.watch(callRequestsStreamProvider).value ?? [];
+    final upcoming = requests.where((r) =>
+        r.status == CallRequestStatus.approved &&
+        r.trainerId == AppConstants.trainerId).toList();
+    final hasUpcoming = upcoming.isNotEmpty;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('DK'),
-        actions: const [
+        actions: [
           Padding(
-            padding: EdgeInsets.only(right: 12),
-            child: Badge(child: Icon(Icons.videocam_outlined)),
+            padding: const EdgeInsets.only(right: 12),
+            child: IconButton(
+              tooltip: hasUpcoming ? 'Join upcoming call' : 'Upcoming calls',
+              icon: Badge(
+                isLabelVisible: hasUpcoming,
+                label: Text('${upcoming.length}'),
+                child: const Icon(Icons.videocam_outlined),
+              ),
+              onPressed: () => AppNavigation.pushNamed(
+                  context, AppRoutes.trainerUpcomingCalls),
+            ),
           ),
         ],
       ),

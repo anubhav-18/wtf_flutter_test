@@ -66,12 +66,28 @@ class _RequestCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text('Requested ${DateFormatters.relative(request.requestedAt)}'),
+            if (request.status == CallRequestStatus.pending) ...[
+              const SizedBox(height: 8),
+              const Text(
+                'Pending approval by Aarav',
+                style: TextStyle(
+                    color: AppColors.warning, fontWeight: FontWeight.w500),
+              ),
+            ],
+            if (request.status == CallRequestStatus.approved) ...[
+              const SizedBox(height: 8),
+              Text(
+                'Call approved for ${DateFormatters.dateTime(request.scheduledFor)}',
+                style: const TextStyle(
+                    color: AppColors.success, fontWeight: FontWeight.w500),
+              ),
+            ],
             if (request.status == CallRequestStatus.declined &&
                 request.declineReason != null &&
                 request.declineReason!.isNotEmpty) ...[
               const SizedBox(height: 8),
               Text(
-                'Declined reason: ${request.declineReason}',
+                'Call request declined. Reason: ${request.declineReason}',
                 style: const TextStyle(color: AppColors.error),
               ),
             ],
