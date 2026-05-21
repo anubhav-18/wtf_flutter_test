@@ -275,3 +275,83 @@ flutter analyze trainer_app: No issues found
 **Decision**: Keep scheduling validation centralized in the shared `CallRepository`/`Validators` layer and have UI surface returned errors as SnackBars, especially for approved-slot conflicts.
 
 ---
+
+## Prompt #13
+
+**Timestamp**: 2026-05-21 18:05 IST
+
+**Tool**: Antigravity (Gemini)
+
+**Intent**: Generation — 100ms HMS Service
+
+**Prompt**: `Implement Phase 2: Shared HMS Service (hms_service.dart). Wrap HMSSDK with token fetch, join/leave, mic/cam toggle, auto-reconnect up to 3 times, and a state stream.`
+
+**Output Summary**: Created `shared/lib/services/hms_service.dart` implementing `HMSUpdateListener` and `HMSActionResultListener`. The service fetches a short-lived JWT from `AppConstants.tokenServerBaseUrl/token`, calls `HMSSDK.build()` and `join()`, emits `HmsRoomState` via a broadcast `StreamController`, handles `onPeerUpdate`/`onTrackUpdate`/`onHMSError`, auto-reconnects on error (up to 3 attempts with 2 s delay), and tears down cleanly on `leave()`. Added `hmsServiceProvider` (autoDispose) and `hmsStateProvider` (StreamProvider) to `app_providers.dart`.
+
+**Debugging Evidence**:
+
+```
+flutter analyze shared: No issues found
+```
+
+**Files Modified**: `shared/lib/services/hms_service.dart` [NEW], `shared/lib/services/services.dart`, `shared/lib/providers/app_providers.dart`, `shared/lib/models/in_call_args.dart` [NEW]
+
+**Commit**: `feat: add HmsService with token fetch, join/leave, auto-reconnect`
+
+**Decision**: Used `Provider.autoDispose` so each in-call screen gets its own HMSSDK lifecycle, automatically cleaned up when the route is popped. This avoids SDK state leaking across multiple calls.
+
+---
+
+## Prompt #14
+
+**Timestamp**: 2026-05-21 18:30 IST
+
+**Tool**: Antigravity (Gemini)
+
+**Intent**: Generation — Full Video Call UI Pipeline
+
+**Prompt**: `Implement Phases 3-7: Upcoming Calls screens, Pre-join device check, InCallScreen, Session Logs, Post-call sheets. Wire all routes in both apps.`
+
+**Output Summary**: UpcomingCallCard with 10-min join window guard; shared PreJoinScreen with mic/camera toggles; shared InCallScreen with HMSVideoView remote/PiP self-preview, duration timer, ControlBar, overlays; both apps get session logs with filter chips; post-call rating (Guru) and notes (Trainer) sheets. Wired all routes. Added Android permissions for camera/mic/bluetooth.
+
+**Debugging Evidence**:
+
+```
+flutter analyze shared:      No issues found
+flutter analyze guru_app:    No issues found
+flutter analyze trainer_app: No issues found
+```
+
+**Files Modified**: 14 new/modified files across shared/, guru_app/, trainer_app/.
+
+**Commit**: `feat: complete video call pipeline`
+
+**Decision**: PreJoinScreen and InCallScreen live in shared/lib/screens/ so both apps reuse identical logic without code duplication.
+
+---
+
+## Prompt #15
+
+**Timestamp**: 2026-05-21 18:55 IST
+
+**Tool**: Antigravity (Gemini)
+
+**Intent**: Tests + Documentation
+
+**Prompt**: `Write 3 unit test files (message serialization, scheduler conflict validation, session log duration). Run flutter test and fix failures. Update README.`
+
+**Output Summary**: 16 tests across 3 files. First run failed because test assumed wrong Message field names (content/isRead vs text/status). Fixed and all 16 pass. README rewritten with quick-start, demo table, token server setup, test command, features matrix.
+
+**Debugging Evidence**:
+
+```
+flutter test shared: 00:00 +16: All tests passed!
+```
+
+**Files Modified**: `shared/test/message_serialization_test.dart` [NEW], `shared/test/scheduler_validation_test.dart` [NEW], `shared/test/session_log_duration_test.dart` [NEW], `README.md`
+
+**Commit**: `test: add 16 unit tests for message, scheduler, session log`
+
+**Decision**: Pure Dart unit tests (no widget tests) to avoid Hive initialization complexity. They validate the JSON round-trips and conflict logic that matter most for demo correctness.
+
+---
