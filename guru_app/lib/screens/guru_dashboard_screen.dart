@@ -9,6 +9,16 @@ class GuruDashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Show badge on Upcoming Calls if any approved requests exist.
+    final requests = ref.watch(callRequestsStreamProvider).value ?? [];
+    final upcomingCount = requests
+        .where(
+          (r) =>
+              r.status == CallRequestStatus.approved &&
+              r.memberId == AppConstants.memberId,
+        )
+        .length;
+
     return Scaffold(
       appBar: AppBar(title: const Text('Member • DK')),
       floatingActionButton: const DevPanelButton(),
@@ -32,13 +42,18 @@ class GuruDashboardScreen extends ConsumerWidget {
             onTap: () =>
                 AppNavigation.pushNamed(context, AppRoutes.guruMyRequests),
           ),
-          const DashboardCard(
+          DashboardCard(
             title: 'Upcoming Calls',
             icon: Icons.video_call_outlined,
+            badge: upcomingCount > 0 ? '$upcomingCount' : null,
+            onTap: () =>
+                AppNavigation.pushNamed(context, AppRoutes.guruUpcomingCalls),
           ),
-          const DashboardCard(
+          DashboardCard(
             title: 'My Sessions',
             icon: Icons.history_outlined,
+            onTap: () =>
+                AppNavigation.pushNamed(context, AppRoutes.guruSessions),
           ),
         ],
       ),

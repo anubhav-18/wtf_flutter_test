@@ -8,7 +8,10 @@ import '../screens/guru_onboarding_screen.dart';
 import '../screens/guru_profile_screen.dart';
 import '../screens/guru_splash_screen.dart';
 import '../screens/my_requests_screen.dart';
+import '../screens/post_call_rating_sheet.dart';
 import '../screens/schedule_call_screen.dart';
+import '../screens/session_logs_screen.dart';
+import '../screens/upcoming_calls_screen.dart';
 
 class GuruApp extends StatelessWidget {
   const GuruApp({super.key});
@@ -33,6 +36,16 @@ class GuruApp extends StatelessWidget {
         AppRoutes.guruConversation: (_) => const ConversationScreen(),
         AppRoutes.guruScheduleCall: (_) => const ScheduleCallScreen(),
         AppRoutes.guruMyRequests: (_) => const MyRequestsScreen(),
+        AppRoutes.guruUpcomingCalls: (_) => const UpcomingCallsScreen(),
+        AppRoutes.guruPreJoin: (_) => PreJoinScreen(
+              inCallRoute: AppRoutes.guruInCall,
+            ),
+        AppRoutes.guruInCall: (_) => InCallScreen(
+              userId: AppConstants.memberId,
+              postCallRoute: AppRoutes.guruPostCall,
+            ),
+        AppRoutes.guruPostCall: (_) => const PostCallRatingSheet(),
+        AppRoutes.guruSessions: (_) => const SessionLogsScreen(),
       },
     );
   }
