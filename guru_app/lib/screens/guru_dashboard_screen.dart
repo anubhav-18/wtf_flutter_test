@@ -5,6 +5,7 @@ import 'package:wtf_shared/wtf_shared.dart';
 import '../widgets/dashboard_card.dart';
 import 'chat_list_screen.dart';
 import 'my_requests_screen.dart';
+import 'schedule_call_screen.dart';
 
 class GuruDashboardScreen extends ConsumerWidget {
   const GuruDashboardScreen({super.key});
@@ -24,9 +25,14 @@ class GuruDashboardScreen extends ConsumerWidget {
               MaterialPageRoute<void>(builder: (_) => const ChatListScreen()),
             ),
           ),
-          const DashboardCard(
+          DashboardCard(
             title: 'Schedule Call',
             icon: Icons.calendar_month_outlined,
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const ScheduleCallScreen(),
+              ),
+            ),
           ),
           DashboardCard(
             title: 'My Requests',

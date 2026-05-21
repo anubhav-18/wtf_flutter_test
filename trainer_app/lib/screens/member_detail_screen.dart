@@ -4,6 +4,7 @@ import 'package:wtf_shared/wtf_shared.dart';
 
 import '../widgets/shortcut_tile.dart';
 import 'trainer_conversation_screen.dart';
+import 'trainer_requests_screen.dart';
 
 class MemberDetailScreen extends ConsumerWidget {
   const MemberDetailScreen({super.key, required this.member});
@@ -66,7 +67,11 @@ class MemberDetailScreen extends ConsumerWidget {
           ShortcutTile(
             title: 'Requests',
             icon: Icons.pending_actions,
-            onTap: () => _showComingNext(context, 'Requests'),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const TrainerRequestsScreen(),
+              ),
+            ),
           ),
           ShortcutTile(
             title: 'Sessions',

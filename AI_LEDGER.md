@@ -243,8 +243,35 @@ flutter analyze guru_app: No issues found
 
 **Files Modified**: `guru_app/lib/screens/my_requests_screen.dart`, `guru_app/lib/screens/guru_dashboard_screen.dart`, `AI_LEDGER.md`
 
-**Commit**: (pending)
+**Commit**: `feat: add guru my requests screen`
 
 **Decision**: Keep request history as a read-only member-facing view for this phase; request creation and trainer approval actions remain separate scheduler/request-management phases.
+
+---
+
+## Prompt #12
+
+**Timestamp**: 2026-05-21 17:23 IST
+
+**Tool**: Cascade
+
+**Intent**: Generation
+
+**Prompt**: `Now, I want you to complete Schedule Call UI & Trainer Requests Management.`
+
+**Output Summary**: Implemented Guru `ScheduleCallScreen` with date picker, time picker, note input, 140-character helper, validation through `callServiceProvider.requestCall`, success feedback, and redirect to `MyRequestsScreen`. Implemented Trainer `TrainerRequestsScreen` with pending-first request list, scheduled time, member summary, note, declined reason, approve action, decline dialog, and repository-backed conflict feedback. Wired Guru dashboard `Schedule Call`, Trainer dashboard `Requests`, and member detail `Requests` shortcut.
+
+**Debugging Evidence**:
+
+```text
+flutter analyze guru_app: No issues found
+flutter analyze trainer_app: No issues found
+```
+
+**Files Modified**: `guru_app/lib/screens/schedule_call_screen.dart`, `guru_app/lib/screens/guru_dashboard_screen.dart`, `trainer_app/lib/screens/trainer_requests_screen.dart`, `trainer_app/lib/screens/trainer_dashboard_screen.dart`, `trainer_app/lib/screens/member_detail_screen.dart`, `AI_LEDGER.md`
+
+**Commit**: `feat: add scheduling request flows`
+
+**Decision**: Keep scheduling validation centralized in the shared `CallRepository`/`Validators` layer and have UI surface returned errors as SnackBars, especially for approved-slot conflicts.
 
 ---
