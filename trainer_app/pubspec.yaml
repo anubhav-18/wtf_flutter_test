@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_riverpod: ^3.2.1
+  hmssdk_flutter: ^1.11.1
   wtf_shared:
     path: ../shared
 

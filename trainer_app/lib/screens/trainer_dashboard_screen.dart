@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wtf_shared/wtf_shared.dart';
 
 import '../widgets/dashboard_tile.dart';
 
-class TrainerDashboardScreen extends StatelessWidget {
+class TrainerDashboardScreen extends ConsumerWidget {
   const TrainerDashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final requests = ref.watch(callRequestsStreamProvider).value ?? [];
+    final upcomingCount = requests
+        .where(
+          (r) =>
+              r.status == CallRequestStatus.approved &&
+              r.trainerId == AppConstants.trainerId,
+        )
+        .length;
+
     return Scaffold(
       appBar: AppBar(title: const Text('Trainer • Aarav')),
       floatingActionButton: const DevPanelButton(),
@@ -35,10 +45,18 @@ class TrainerDashboardScreen extends StatelessWidget {
             onTap: () =>
                 AppNavigation.pushNamed(context, AppRoutes.trainerRequests),
           ),
-          const DashboardTile(title: 'Sessions', icon: Icons.history_outlined),
-          const DashboardTile(
+          DashboardTile(
+            title: 'Sessions',
+            icon: Icons.history_outlined,
+            onTap: () =>
+                AppNavigation.pushNamed(context, AppRoutes.trainerSessions),
+          ),
+          DashboardTile(
             title: 'Upcoming Calls',
             icon: Icons.video_call_outlined,
+            badge: upcomingCount > 0 ? '$upcomingCount' : null,
+            onTap: () => AppNavigation.pushNamed(
+                context, AppRoutes.trainerUpcomingCalls),
           ),
         ],
       ),
